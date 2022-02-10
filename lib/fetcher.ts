@@ -1,4 +1,4 @@
-export default function fetcher(url: string, data = undefined) {
+export default function fetcher(url: string, data?: object) {
   return fetch(`${window.location.origin}/api${url}`, {
     method: data ? "POST" : "GET",
     credentials: "include",

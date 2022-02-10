@@ -32,9 +32,15 @@ const theme = extendTheme({
 const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ChakraProvider theme={theme}>
-      <AdminLayout>
+      {["Signin", "Signup", "ErrorPage"].includes(
+        Component.displayName || ""
+      ) ? (
         <Component {...pageProps} />
-      </AdminLayout>
+      ) : (
+        <AdminLayout>
+          <Component {...pageProps} />
+        </AdminLayout>
+      )}
     </ChakraProvider>
   );
 };

@@ -1,8 +1,8 @@
 import { Box, Flex, Text } from "@chakra-ui/layout";
 import NextLink from "next/link";
-import SigninForm from "./signin-from";
+import { SignupForm } from "./signup-form";
 
-const SignIn = () => {
+const SignUp = () => {
   return (
     <Box width="100vw" height="100vh">
       <Flex
@@ -10,26 +10,23 @@ const SignIn = () => {
         align="center"
         paddingY="5"
         paddingX="3"
-        shadow="md"
+        shadow="xl"
         marginX="30%"
-        marginY="15%"
+        marginY="10%"
         direction="column"
       >
         <Box mb="3">logo</Box>
         <Box width="50%">
-          <SigninForm />
+          <SignupForm />
         </Box>
         <Box mt="3">
           <Text
             textAlign="center"
             fontWeight="light"
             fontSize="md"
-            color="purple.300"
+            color="gray.300"
           >
-            <NextLink href="/forgot-password">Forgot password?</NextLink>
-          </Text>
-          <Text fontWeight="light" fontSize="md" color="gray.400">
-            Do not have an account?
+            Already have an account?
           </Text>
           <Text
             textAlign="center"
@@ -37,7 +34,7 @@ const SignIn = () => {
             fontSize="md"
             color="purple.300"
           >
-            <NextLink href="/signup">register</NextLink>
+            <NextLink href="/signin">Login</NextLink>
           </Text>
         </Box>
       </Flex>
@@ -45,4 +42,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;

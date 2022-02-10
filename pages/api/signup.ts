@@ -35,7 +35,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       return;
     }
 
-    const Role = await prisma.role.findUnique({ where: { id: role } });
+    const Role = await prisma.role.findUnique({ where: { name: role } });
 
     if (!Role) {
       res.status(401);
