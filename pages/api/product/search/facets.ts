@@ -10,12 +10,15 @@ export default validateRoute(
       return;
     }
 
+    const { serchTerm } = req.body;
+
     try {
       const facets = await prisma.facet.findMany({
+        where: { name: serchTerm },
         orderBy: { name: "asc" },
         include: { values: true },
       });
-      res.json(facets);
+      res.json({ data: facets });
     } catch (error) {
       res.status(500);
       res.json({ error: "Something went wrong" });

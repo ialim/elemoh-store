@@ -18,8 +18,8 @@ export const SidebarMenu = [
     icon: IoListOutline,
     submenu: [
       {
-        name: "Category",
-        route: "/category",
+        name: "Facets",
+        route: "/facets",
       },
       {
         name: "Product List",

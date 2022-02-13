@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const signedinPages = ["/"];
+const signedinPages = ["/", "/facets", "/create-facets"];
 
 export default function middleware(req: NextRequest) {
   if (signedinPages.find((p) => p === req.nextUrl.pathname)) {
