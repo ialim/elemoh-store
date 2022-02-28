@@ -4,6 +4,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/router";
 import { auth } from "../lib/mutations";
 import { RevampInput } from "./revamp-input";
+import { useAlertMessage } from "../lib/hooks";
 
 interface IFormInput {
   username: string;
@@ -13,16 +14,14 @@ interface IFormInput {
 const SigninForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { control, handleSubmit } = useForm<IFormInput>();
+  const { alertMessage } = useAlertMessage();
   const router = useRouter();
 
   const onSubmit = async (data: IFormInput) => {
     setIsLoading(true);
     const result = await auth("signin", data);
     setIsLoading(false);
-    if (result?.error) {
-      alert(JSON.stringify(result.error));
-      return;
-    }
+    alertMessage(result, "Login Successfull");
     router.push("/");
   };
 

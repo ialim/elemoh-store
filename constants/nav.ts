@@ -22,8 +22,8 @@ export const SidebarMenu = [
         route: "/facets",
       },
       {
-        name: "Product List",
-        route: "/product-list",
+        name: "Products",
+        route: "/products",
       },
       {
         name: "Add product",

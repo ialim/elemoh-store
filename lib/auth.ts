@@ -21,9 +21,8 @@ export const validateRoute = (handler: any) => {
           throw new Error("Not a real user");
         }
       } catch (error) {
-        console.log(error);
         res.status(401);
-        res.json({ error: "Not Authorized something wrong" });
+        res.json({ error: "Not Authorized Token Error, something wrong" });
         return;
       }
 

@@ -13,7 +13,7 @@ export default validateRoute(
     try {
       const products = await prisma.product.findMany({
         orderBy: { name: "asc" },
-        include: { brand: true, variants: true },
+        include: { variants: true },
       });
       res.json(products);
     } catch (error) {

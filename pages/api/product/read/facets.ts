@@ -15,6 +15,7 @@ export default validateRoute(
         orderBy: { name: "asc" },
         include: { values: { select: { name: true } } },
       });
+
       res.json(facets);
     } catch (error) {
       res.status(500);

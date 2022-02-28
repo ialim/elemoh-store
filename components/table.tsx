@@ -16,6 +16,7 @@ import {
   MenuItem,
   IconButton,
   Stack,
+  Progress,
 } from "@chakra-ui/react";
 import {
   usePagination,
@@ -48,7 +49,8 @@ export interface TableProps {
   setData: Function;
   name: string;
   type: "SERVER" | "CLIENT";
-  dataType: string;
+  onOpen: () => void;
+  setValues: Function;
 }
 
 const TableList = ({
@@ -61,7 +63,8 @@ const TableList = ({
   setData,
   name,
   type,
-  dataType,
+  onOpen,
+  setValues,
 }: TableProps) => {
   const {
     getTableProps,
@@ -79,6 +82,7 @@ const TableList = ({
     previousPage,
     setPageSize,
     setHiddenColumns,
+    selectedFlatRows,
     setGlobalFilter,
     allColumns,
     getToggleHideAllColumnsProps,
@@ -86,7 +90,7 @@ const TableList = ({
   } = useTable(
     {
       columns,
-      data,
+      data: data || [],
       initialState: { pageIndex: 0 }, // Pass our hoisted table state
       manualPagination: type === "SERVER", // Tell the usePagination
       // hook that we'll handle our own data fetching
@@ -140,9 +144,11 @@ const TableList = ({
           Cell: ({ row }: any) => (
             <Box>
               <Action
-                dataType={dataType}
-                id={row?.values.id}
-                actions={["VIEW", "EDIT"]}
+                dataType={name}
+                values={row?.values}
+                actions={["EDIT", "DELETE"]}
+                openModal={onOpen}
+                setValues={setValues}
               />
             </Box>
           ),
@@ -153,9 +159,17 @@ const TableList = ({
 
   useEffect(() => {
     setHiddenColumns(["id"]);
-    console.log(selectedRowIds);
+    console.log(selectedRowIds, selectedFlatRows);
     if (type === "SERVER") fetchData({ pageIndex, pageSize });
-  }, [fetchData, pageIndex, pageSize, selectedRowIds, setHiddenColumns, type]);
+  }, [
+    fetchData,
+    pageIndex,
+    pageSize,
+    selectedFlatRows,
+    selectedRowIds,
+    setHiddenColumns,
+    type,
+  ]);
   return (
     <>
       <Box py="3">
@@ -253,7 +267,7 @@ const TableList = ({
           </Menu>
         </Flex>
       </Box>
-      {loading && <Text>Loading...</Text>}
+      {loading && <Progress size="xs" colorScheme="purple" isIndeterminate />}
       <Table variant="simple" mt="5" {...getTableProps()}>
         <Thead>
           {headerGroups.map((headerGroup) => (

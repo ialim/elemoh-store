@@ -13,14 +13,29 @@ type ActionType = "VIEW" | "EDIT" | "ADD PAYMENT" | "VIEW PAYMENT" | "DELETE";
 
 interface ActionProps {
   actions: ActionType[];
-  id: string;
+  values: any;
   dataType?: string;
+  openModal?: () => void;
+  setValues: Function;
 }
 
-const Action = ({ actions, id, dataType }: ActionProps) => {
+const Action = ({
+  actions,
+  values,
+  dataType,
+  openModal,
+  setValues,
+}: ActionProps) => {
   const router = useRouter();
-  const handleClick = (action: string) => {
-    router.push({ pathname: `/${action}-${dataType}`, query: { id } });
+  const handleClickEdit = (action: string) => {
+    router.push({
+      pathname: `/${action}-${dataType?.slice(0, -1)}`,
+      query: { id: values?.id },
+    });
+  };
+  const handleClickDelete = (openIModal: any) => {
+    setValues(values);
+    openIModal();
   };
   return (
     <Menu>
@@ -44,7 +59,7 @@ const Action = ({ actions, id, dataType }: ActionProps) => {
               <MenuItem
                 key={action}
                 icon={<IoPencilOutline />}
-                onClick={() => handleClick("edit")}
+                onClick={() => handleClickEdit("update")}
               >
                 Edit
               </MenuItem>
@@ -60,7 +75,11 @@ const Action = ({ actions, id, dataType }: ActionProps) => {
               </MenuItem>
             )}
             {action === "DELETE" && (
-              <MenuItem key={action} icon={<IoTrashOutline />}>
+              <MenuItem
+                key={action}
+                icon={<IoTrashOutline />}
+                onClick={() => handleClickDelete(openModal)}
+              >
                 Delete
               </MenuItem>
             )}
@@ -73,6 +92,7 @@ const Action = ({ actions, id, dataType }: ActionProps) => {
 
 Action.defaultProps = {
   dataType: "hello",
+  openModal: null,
 };
 
 export default Action;

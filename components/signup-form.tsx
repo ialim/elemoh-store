@@ -1,4 +1,4 @@
-import { FormControl, Input } from "@chakra-ui/react";
+import { FormControl, Input, useToast } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -31,6 +31,7 @@ export const SignupForm = () => {
   const { control, handleSubmit, watch } = useForm<IFormInput>();
   const password = useRef({});
   const router = useRouter();
+  const toast = useToast();
   password.current = watch("password", "");
 
   const onSubmit = async (data: IFormInput) => {
@@ -46,7 +47,14 @@ export const SignupForm = () => {
     const result = await auth("signup", revData);
     setIsLoading(false);
     if (result?.error) {
-      alert(JSON.stringify(result.error));
+      toast({
+        title: "An error occurred.",
+        description: result.error,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-right",
+      });
       return;
     }
     router.push("/");

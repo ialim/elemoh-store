@@ -10,17 +10,35 @@ export default validateRoute(
       return;
     }
 
-    const { name, facetId } = req.body;
+    const { name, id, values } = req.body;
+
+    const valuesOpt = values.map((value: any) => {
+      return {
+        where: (value.id && { id: value.id }) || { name: value.name },
+        create: { name: value.name },
+        update: { name: value.name },
+      };
+    });
 
     let facet;
 
     try {
       facet = await prisma.facet.update({
         where: {
-          id: facetId,
+          id,
         },
         data: {
           ...(name && { name }),
+          values: {
+            upsert: [...valuesOpt],
+          },
+        },
+        include: {
+          values: {
+            select: {
+              name: true,
+            },
+          },
         },
       });
       res.json(facet);

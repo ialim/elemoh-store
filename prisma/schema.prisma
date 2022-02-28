@@ -115,15 +115,6 @@ model Supplier {
   purchases   Purchase[]
 }
 
-model Brand {
-  id        Int       @id @default(autoincrement())
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  name      String    @unique
-  code      String    @unique
-  products  Product[]
-}
-
 model Facet {
   id        Int          @id @default(autoincrement())
   createdAt DateTime     @default(now())
@@ -140,6 +131,7 @@ model FacetValue {
   facet           Facet            @relation(fields: [facetId], references: [id])
   facetId         Int
   productVariants ProductVariant[]
+  products         Product[]
   collections     Collection[]
 }
 
@@ -149,8 +141,7 @@ model Product {
   updatedAt   DateTime         @updatedAt
   name        String           @unique
   description String
-  brand       Brand            @relation(fields: [brandId], references: [id])
-  brandId     Int
+  facetValues FacetValue[]
   variants    ProductVariant[]
 }
 

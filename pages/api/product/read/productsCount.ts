@@ -11,8 +11,8 @@ export default validateRoute(
     }
 
     try {
-      const brands = await prisma.brand.findMany({ orderBy: { name: "asc" } });
-      res.json(brands);
+      const count = await prisma.product.count();
+      res.json(count);
     } catch (error) {
       res.status(500);
       res.json({ error: "Something went wrong" });
