@@ -8,8 +8,7 @@ import {
   IoTrashOutline,
 } from "react-icons/io5";
 import { useRouter } from "next/router";
-
-type ActionType = "VIEW" | "EDIT" | "ADD PAYMENT" | "VIEW PAYMENT" | "DELETE";
+import { ActionType } from "../types/types";
 
 interface ActionProps {
   actions: ActionType[];
@@ -17,6 +16,7 @@ interface ActionProps {
   dataType?: string;
   openModal?: () => void;
   setValues: Function;
+  viewOpen?: () => void;
 }
 
 const Action = ({
@@ -25,6 +25,7 @@ const Action = ({
   dataType,
   openModal,
   setValues,
+  viewOpen,
 }: ActionProps) => {
   const router = useRouter();
   const handleClickEdit = (action: string) => {
@@ -33,7 +34,7 @@ const Action = ({
       query: { id: values?.id },
     });
   };
-  const handleClickDelete = (openIModal: any) => {
+  const handleClick = (openIModal: any) => {
     setValues(values);
     openIModal();
   };
@@ -51,7 +52,11 @@ const Action = ({
         {actions?.map((action) => (
           <>
             {action === "VIEW" && (
-              <MenuItem key={action} icon={<IoEyeOutline />}>
+              <MenuItem
+                key={action}
+                icon={<IoEyeOutline />}
+                onClick={() => handleClick(viewOpen)}
+              >
                 View
               </MenuItem>
             )}
@@ -78,7 +83,7 @@ const Action = ({
               <MenuItem
                 key={action}
                 icon={<IoTrashOutline />}
-                onClick={() => handleClickDelete(openModal)}
+                onClick={() => handleClick(openModal)}
               >
                 Delete
               </MenuItem>
@@ -93,6 +98,7 @@ const Action = ({
 Action.defaultProps = {
   dataType: "hello",
   openModal: null,
+  viewOpen: null,
 };
 
 export default Action;

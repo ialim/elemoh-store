@@ -1,7 +1,7 @@
 import { Box, Stack, Text } from "@chakra-ui/layout";
-import { useCallback, useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { IoAddOutline, IoDocumentsOutline } from "react-icons/io5";
-import { useDisclosure } from "@chakra-ui/react";
+import { Button, useDisclosure } from "@chakra-ui/react";
 import { useAlertMessage, useLazyRequest } from "../lib/hooks";
 import LinkedButton from "./linked-button";
 import TableList from "./table";
@@ -9,6 +9,9 @@ import { CLIENT_SIDE_FILTERING_LIMIT } from "../constants/paths";
 import AlertMessage from "./alert-message";
 import DeleteModal from "./modal";
 import { mutate } from "../lib/mutations";
+import ViewModal from "./view-modal";
+import { ActionType } from "../types/types";
+import ImportFileModal from "./import-file-modal";
 
 interface ModelListProps {
   columns: any[];
@@ -21,6 +24,12 @@ interface ModelListProps {
   searchQuery: string;
   deletePath: string;
   mutateSWR: Function;
+  deleteWarning: string;
+  actions: ActionType[];
+  correctCollumnOrder: string;
+  viewModalContent?: React.ReactElement;
+  values: any;
+  setValues: Function;
 }
 
 const ModelList = ({
@@ -34,12 +43,27 @@ const ModelList = ({
   searchQuery,
   deletePath,
   mutateSWR,
+  deleteWarning,
+  actions,
+  correctCollumnOrder,
+  viewModalContent,
+  values,
+  setValues,
 }: ModelListProps) => {
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const fetchIdRef = useRef(0);
   const { onClose, onOpen, isOpen } = useDisclosure();
-  const [values, setValues] = useState<any>();
+  const {
+    onClose: importClose,
+    onOpen: importOpen,
+    isOpen: importIsOpen,
+  } = useDisclosure();
+  const {
+    onClose: viewClose,
+    onOpen: viewOpen,
+    isOpen: viewIsOpen,
+  } = useDisclosure();
   const { alertMessage } = useAlertMessage();
 
   const { response, executeQuery } = useLazyRequest(query);
@@ -83,11 +107,17 @@ const ModelList = ({
           href={`/create-${type.slice(0, -1)}`}
           icon={<IoAddOutline />}
         />
-        <LinkedButton
-          name={`IMPORT ${type.toUpperCase()}`}
-          href={`/import-${type}`}
-          icon={<IoDocumentsOutline />}
-        />
+        <Button
+          leftIcon={<IoDocumentsOutline />}
+          colorScheme="purple"
+          variant="solid"
+          mr="3"
+          onClick={() => {
+            importOpen();
+          }}
+        >
+          {`IMPORT ${type.toUpperCase()}`}
+        </Button>
       </Box>
       <Box>
         {isError ? (
@@ -111,6 +141,8 @@ const ModelList = ({
             }
             onOpen={onOpen}
             setValues={setValues}
+            actions={actions}
+            viewOpen={viewOpen}
           />
         )}
       </Box>
@@ -122,17 +154,34 @@ const ModelList = ({
           onClose();
           handleDelete();
         }}
-        title={`Delete ${type.toUpperCase()}`}
+        title={`DELETE ${type.toUpperCase()}`}
       >
         <Stack spacing="2">
           <Text>Are you sure you want to delete {values?.name}</Text>
-          <Text>
-            This will also delete all values attributed to this {type}
-          </Text>
+          <Text>{deleteWarning}</Text>
         </Stack>
       </DeleteModal>
+      <ViewModal
+        isOpen={viewIsOpen}
+        onClose={viewClose}
+        title={`VIEW ${type.toUpperCase()}`}
+        type="view"
+      >
+        {viewModalContent}
+      </ViewModal>
+      <ImportFileModal
+        onClose={importClose}
+        isOpen={importIsOpen}
+        title="Import File"
+        correctCollumnOrder={correctCollumnOrder}
+        name={type}
+      />
     </Box>
   );
+};
+
+ModelList.defaultProps = {
+  viewModalContent: null,
 };
 
 export default ModelList;

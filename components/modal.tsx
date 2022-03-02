@@ -7,14 +7,15 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Divider,
 } from "@chakra-ui/react";
 import { reactChild } from "../types/types";
 
-interface SimpleModalProps extends reactChild {
+export interface SimpleModalProps extends reactChild {
   isOpen: boolean;
   onClose: () => void;
   title: string;
-  type?: "delete" | "view";
+  type?: "delete" | "view" | "import";
   onClick?: () => void;
 }
 
@@ -32,10 +33,13 @@ const SimpleModal = ({
       onClose={onClose}
       isOpen={isOpen}
       motionPreset="slideInRight"
+      size={["view", "import"].includes(type || "") ? "3xl" : "lg"}
+      scrollBehavior="inside"
     >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{title}</ModalHeader>
+        <Divider />
         <ModalCloseButton />
         <ModalBody>{children}</ModalBody>
         {type === "delete" && (

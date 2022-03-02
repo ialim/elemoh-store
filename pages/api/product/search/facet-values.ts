@@ -10,14 +10,17 @@ export default validateRoute(
       return;
     }
 
-    const { searchTerm, type } = req.body;
+    const { searchTerm, type, omitFacets } = req.body;
 
     let facetValues;
 
     try {
       if (type === "variant") {
         facetValues = await prisma.facetValue.findMany({
-          where: { name: { contains: searchTerm } },
+          where: {
+            name: { contains: searchTerm },
+            facet: { name: { notIn: omitFacets } },
+          },
           orderBy: { name: "asc" },
           include: { facet: { select: { name: true } } },
         });
@@ -25,7 +28,9 @@ export default validateRoute(
         facetValues = await prisma.facetValue.findMany({
           where: {
             name: { contains: searchTerm },
-            facet: { name: { in: ["brand", "note"] } },
+            facet: {
+              name: { in: ["brand", "note", "gender"], notIn: omitFacets },
+            },
           },
           orderBy: { name: "asc" },
           include: { facet: { select: { name: true } } },

@@ -27,7 +27,7 @@ export const SidebarMenu = [
       },
       {
         name: "Add product",
-        route: "/add-product",
+        route: "/create-product",
       },
       {
         name: "Print Barcode",

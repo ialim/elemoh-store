@@ -11,3 +11,6 @@ export const DELETE_FACET_VALUE = "/product/delete/facet-value";
 export const CREATE_FACET = "/product/create/facet";
 export const UPDATE_FACET = "/product/edit/facet";
 export const DELETE_FACET = "/product/delete/facet";
+export const CREATE_PRODUCT = "/product/create/product";
+export const DELETE_PRODUCT = "/product/delete/product";
+export const READ_PRODUCT = "/product/read/product";

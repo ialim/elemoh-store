@@ -17,6 +17,7 @@ export default validateRoute(
       });
       res.json(products);
     } catch (error) {
+      console.log(error);
       res.status(500);
       res.json({ error: "Something went wrong" });
     }

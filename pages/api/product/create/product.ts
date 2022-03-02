@@ -10,7 +10,7 @@ export default validateRoute(
       return;
     }
 
-    const { name, description, brandId } = req.body;
+    const { name, description, facetValues, variants } = req.body;
 
     let product;
 
@@ -23,20 +23,13 @@ export default validateRoute(
         return;
       }
 
-      const brand = await prisma.brand.findUnique({ where: { id: brandId } });
-
-      if (!brand) {
-        res.status(401);
-        res.json({ error: "brand does not exist" });
-        return;
-      }
-
       product = await prisma.product.create({
         data: {
           name,
           description,
-          brand: {
-            connect: { id: brand?.id },
+          facetValues: { connect: facetValues },
+          variants: {
+            create: variants,
           },
         },
       });

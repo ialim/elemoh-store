@@ -12,7 +12,8 @@ import { useState } from "react";
 import { Controller, NestedValue, useForm } from "react-hook-form";
 import VariantInputField from "./variant-input-field";
 import { mutate } from "../lib/mutations";
-import { SEARCH_FACET_VALUES } from "../constants/paths";
+import { CREATE_PRODUCT, SEARCH_FACET_VALUES } from "../constants/paths";
+import { useAlertMessage } from "../lib/hooks";
 
 type variant = {
   name: string;
@@ -29,6 +30,8 @@ interface CreateProductInput {
 
 const CreateProduct = () => {
   const [isloading, setIsLoading] = useState(false);
+  const [selected, setSelected] = useState<any[]>([]);
+  const { alertMessage } = useAlertMessage();
   const {
     control,
     handleSubmit,
@@ -53,9 +56,11 @@ const CreateProduct = () => {
     inputValue: string,
     type: "product" | "variant"
   ) => {
+    const omitFacets = selected.map((select) => select.label.split(":")[0]);
     const facetValues = await mutate(SEARCH_FACET_VALUES, {
       searchTerm: inputValue,
       type,
+      omitFacets,
     });
 
     if (facetValues?.error) return [];
@@ -77,10 +82,34 @@ const CreateProduct = () => {
     callback(await getFacetValues(inputValue, "product"));
   };
 
-  const onSubmitCreate = (data: any) => {
+  const onSubmitCreate = async (data: any) => {
     setIsLoading(true);
-    console.log(data);
+    const { name, facetValues, description, variants } = data;
+    const createProductData = {
+      name,
+      description,
+      facetValues: facetValues.map((facetValue: any) => {
+        return {
+          id: facetValue.value,
+        };
+      }),
+      variants: variants.map((variantN: any) => {
+        variantN.facetValues = {
+          connect: variantN.facetValues.map((facetValue: any) => {
+            return { id: facetValue.value };
+          }),
+        };
+        return variantN;
+      }),
+    };
+    const product = await mutate(CREATE_PRODUCT, createProductData);
     setIsLoading(false);
+    alertMessage(product, `Product: ${product.name} was created successfully`);
+  };
+
+  const handleChange = (val: any, field: any) => {
+    field.onChange(val);
+    setSelected([...val]);
   };
 
   return (
@@ -137,7 +166,7 @@ const CreateProduct = () => {
                   <ReactSelect
                     closeMenuOnSelect={false}
                     value={field.value}
-                    onChange={field.onChange}
+                    onChange={(e) => handleChange(e, field)}
                     ref={field.ref}
                     isMulti
                     placeholder="Add Facets"
@@ -177,6 +206,7 @@ const CreateProduct = () => {
           control={control}
           register={register}
           type="variant"
+          handleChange={handleChange}
         />
       </form>
     </Box>

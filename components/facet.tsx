@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Badge, Box } from "@chakra-ui/layout";
 import { useFacets, useFacetsCount } from "../lib/hooks";
 import {
@@ -10,8 +10,10 @@ import {
 } from "../constants/paths";
 import { formatDate } from "../lib/formatters";
 import ModelList from "./model-list";
+import { FACET_CSV_COLUMN_ORDER } from "../constants/value";
 
 const Facet = () => {
+  const [values, setValues] = useState<any>();
   const { count, isLoading, isError } = useFacetsCount();
   const facetsCount = count?.error ? 0 : count;
 
@@ -69,6 +71,11 @@ const Facet = () => {
       columns={columns}
       models={facets?.error ? undefined : facets}
       deletePath={DELETE_FACET}
+      deleteWarning="This will delete all associated facet values for this facets"
+      actions={["EDIT", "DELETE"]}
+      correctCollumnOrder={FACET_CSV_COLUMN_ORDER}
+      setValues={setValues}
+      values={values}
     />
   );
 };

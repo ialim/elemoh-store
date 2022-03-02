@@ -19,6 +19,7 @@ interface VariantInputFieldProps {
   handleInputChange: any;
   getFacetValues: any;
   type: "product" | "variant";
+  handleChange: Function;
 }
 const VariantInputField = ({
   control,
@@ -26,6 +27,7 @@ const VariantInputField = ({
   handleInputChange,
   getFacetValues,
   type,
+  handleChange,
 }: VariantInputFieldProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
@@ -68,7 +70,7 @@ const VariantInputField = ({
                     <ReactSelect
                       closeMenuOnSelect={false}
                       value={field.value}
-                      onChange={field.onChange}
+                      onChange={(e) => handleChange(e, field)}
                       ref={field.ref}
                       isMulti
                       placeholder="Add Facets"

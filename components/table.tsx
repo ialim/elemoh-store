@@ -36,6 +36,7 @@ import Action from "./action";
 import { IndeterminateCheckbox } from "./table-checkbox";
 import TableFooter from "./table-footer";
 import { SearchTable } from "./serach-table";
+import { ActionType } from "../types/types";
 
 const ActionHeader = () => <Box>Action</Box>;
 
@@ -50,7 +51,9 @@ export interface TableProps {
   name: string;
   type: "SERVER" | "CLIENT";
   onOpen: () => void;
+  viewOpen: () => void;
   setValues: Function;
+  actions: ActionType[];
 }
 
 const TableList = ({
@@ -65,6 +68,8 @@ const TableList = ({
   type,
   onOpen,
   setValues,
+  actions,
+  viewOpen,
 }: TableProps) => {
   const {
     getTableProps,
@@ -146,9 +151,10 @@ const TableList = ({
               <Action
                 dataType={name}
                 values={row?.values}
-                actions={["EDIT", "DELETE"]}
+                actions={actions}
                 openModal={onOpen}
                 setValues={setValues}
+                viewOpen={viewOpen}
               />
             </Box>
           ),

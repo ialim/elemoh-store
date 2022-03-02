@@ -1,6 +1,7 @@
 import { useToast } from "@chakra-ui/react";
 import { useState } from "react";
 import useSWR from "swr";
+import { READ_PRODUCT } from "../constants/paths";
 import fetcher from "./fetcher";
 
 export const useMe = () => {
@@ -29,6 +30,17 @@ export const useProducts = () => {
 
   return {
     products: data || [],
+    isLoading: !data && !error,
+    isError: error,
+    mutate,
+  };
+};
+
+export const useProduct = (variables: object) => {
+  const { data, error, mutate } = useSWR([READ_PRODUCT, variables], fetcher);
+
+  return {
+    product: data || undefined,
     isLoading: !data && !error,
     isError: error,
     mutate,
